@@ -2,24 +2,15 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.route.js";
+import connectDb from "./Db/dbConnect.js";
 
 const app = express();
 dotenv.config();
 const port = process.env.PORT || 5000;
 
 
-// Mongo db Connection
-try {
-  const connection = await mongoose
-    .connect(`${process.env.MONGODB_URI}/FullstackAuth`)
-    .then(() => {
-      console.log("Mongo Db Connection established!!!!!!");
-    });
-} catch (error) {
-  console.log("Connection error: " + error);
-  process.exit(1);
-}
-
+// Db connection function
+connectDb()
 
 
 
