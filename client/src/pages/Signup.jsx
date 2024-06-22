@@ -18,7 +18,7 @@ const Signup = () => {
       body: JSON.stringify(formData),
     });
     const data = await response.json();
-    console.log(data.msg);
+    
   };
 
   return (
@@ -60,6 +60,7 @@ const Signup = () => {
         </Link>
       </div>
     </div>
+    // needs to add some functionality
   );
 };
 
