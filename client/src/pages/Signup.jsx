@@ -1,8 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 const Signup = () => {
+  const [resMessage, setResMessage] = useState(false);
+  const [res, setResponce] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const [formData, setFromData] = useState({});
   const handleChange = (e) => {
     setFromData({ ...formData, [e.target.id]: e.target.value });
@@ -10,15 +15,26 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await response.json();
-    
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:5000/api/auth/signup`,
+        formData
+      );
+      setResponce(response.data);
+      console.log(response.data);
+    } catch (error) {
+      // console.error(
+      //   "Error:",
+      //   error.response ? error.response.data : error.message
+      // );
+      setResponce(
+        error.response ? error.response.data : { msg: error.message }
+      );
+    }
+    setLoading(false);
+    setResMessage(true);
   };
 
   return (
@@ -46,10 +62,26 @@ const Signup = () => {
           placeholder="Password"
           onChange={handleChange}
         />
-        <button className="bg-slate-700 uppercase text-white p-3 rounded-lg hover:opacity-90 disabled:opacity-80 ">
-          Sign Up
+        <button
+          className={`bg-slate-700 uppercase text-white p-3 rounded-lg hover:opacity-90 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
+        >
+          {/* Sign Up */}
+          {loading ? "Loading...." : "Sign Up"}
         </button>
       </form>
+      {resMessage && res && (
+        <div
+          className={`text-center mt-2 ${
+            res.existingUser ? "text-red-500" : "text-green-500"
+          }`}
+        >
+          <h1>{res.msg}</h1>
+        </div>
+      )}
+
       <div className="flex gap-2 mt-5 ">
         <p>Have an Account?</p>
 
